@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign Up — Velora</title>
+<meta name="description" content="Create a Velora account to start shopping premium fashion." />
+<link rel="stylesheet" href="css/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="min-h-screen flex flex-col">
+<div id="navbar"></div>
+<main class="flex-1 min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-lg bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+    <h1 class="text-3xl font-bold text-center mb-2 text-black dark:text-white">Create Account</h1>
+    <p class="text-gray-500 dark:text-gray-400 text-center mb-8">Join Velora and start shopping</p>
+    <form id="signup-form" class="space-y-5">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div><label class="block mb-2 font-medium text-black dark:text-white">First Name</label><input required name="firstName" placeholder="John" class="fld" /></div>
+        <div><label class="block mb-2 font-medium text-black dark:text-white">Last Name</label><input required name="lastName" placeholder="Doe" class="fld" /></div>
+      </div>
+      <div><label class="block mb-2 font-medium text-black dark:text-white">Email</label><input required type="email" name="email" placeholder="Enter your email" class="fld" /></div>
+      <div><label class="block mb-2 font-medium text-black dark:text-white">Password</label><input required type="password" name="password" placeholder="Create a password" class="fld" /></div>
+      <div><label class="block mb-2 font-medium text-black dark:text-white">Confirm Password</label><input required type="password" name="confirmPassword" placeholder="Confirm your password" class="fld" /></div>
+      <p id="signup-error" class="text-red-500 text-sm hidden"></p>
+      <button class="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition">Create Account</button>
+    </form>
+    <p class="text-center mt-6 text-gray-600 dark:text-gray-400">Already have an account? <a href="login.html" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Login</a></p>
+  </div>
+</main>
+<div id="footer"></div>
+<style>
+.fld { width:100%; border:1px solid #d1d5db; background:#fff; color:#000; border-radius:.5rem; padding:.75rem 1rem; }
+.dark .fld { background:#374151; color:#fff; border-color:#4b5563; }
+.fld:focus { outline:none; box-shadow:0 0 0 2px #000; }
+.dark .fld:focus { box-shadow:0 0 0 2px #fff; }
+</style>
+<script src="js/store.js"></script>
+<script src="js/layout.js"></script>
+<script>
+document.getElementById('signup-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const err = document.getElementById('signup-error');
+  if (fd.get('password') !== fd.get('confirmPassword')) {
+    err.textContent = 'Passwords do not match'; err.classList.remove('hidden'); return;
+  }
+  err.classList.add('hidden');
+  toast('Account creation will be enabled later.');
+});
+</script>
+</body>
+</html>
