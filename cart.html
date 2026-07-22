@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cart — Velora</title>
+<meta name="description" content="Review items in your shopping cart and proceed to checkout." />
+<link rel="stylesheet" href="style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="min-h-screen flex flex-col">
+<div id="navbar"></div>
+<main class="flex-1 min-h-screen bg-white dark:bg-gray-900">
+  <div id="cart-root" class="max-w-7xl mx-auto px-6 py-12"></div>
+</main>
+<div id="footer"></div>
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script src="layout.js"></script>
+<script>
+function render() {
+  const root = document.getElementById('cart-root');
+  const items = Cart.items;
+  if (items.length === 0) {
+    root.innerHTML = `
+      <div class="max-w-6xl mx-auto px-6 py-16 text-center">
+        <h1 class="text-4xl font-bold mb-4 text-black dark:text-white">Your Cart is Empty</h1>
+        <p class="text-gray-500 dark:text-gray-400 mb-8">Looks like you haven't added anything yet.</p>
+        <a href="shop.html" class="bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition inline-block">Continue Shopping</a>
+      </div>`;
+    return;
+  }
+  const subtotal = Cart.subtotal();
+  const shipping = subtotal > 0 ? 10 : 0;
+  const total = subtotal + shipping;
+  root.innerHTML = `
+    <div class="flex justify-between items-center mb-10">
+      <h1 class="text-4xl font-bold text-black dark:text-white">Shopping Cart</h1>
+      <button data-clear class="text-red-500 hover:text-red-700 font-medium">Clear Cart</button>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-10">
+      <div class="lg:col-span-2 space-y-6">
+        ${items.map(item => `
+        <div class="flex items-center justify-between bg-white dark:bg-gray-800 shadow rounded-xl p-5 flex-wrap gap-4">
+          <div class="flex items-center gap-5">
+            <img src="${item.image}" alt="${item.name}" class="w-24 h-24 rounded-lg object-cover" />
+            <div>
+              <h2 class="text-xl font-semibold text-black dark:text-white">${item.name}</h2>
+              <p class="text-gray-500 dark:text-gray-400 mt-1">$${item.price}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <button data-dec="${item.id}" class="border border-gray-300 dark:border-gray-600 w-8 h-8 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white">−</button>
+            <span class="font-semibold text-black dark:text-white">${item.quantity}</span>
+            <button data-inc="${item.id}" class="border border-gray-300 dark:border-gray-600 w-8 h-8 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white">+</button>
+          </div>
+          <button data-rm="${item.id}" class="text-red-500 hover:text-red-700">Remove</button>
+        </div>`).join('')}
+      </div>
+      <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow h-fit">
+        <h2 class="text-2xl font-bold mb-6 text-black dark:text-white">Order Summary</h2>
+        <div class="flex justify-between mb-4 text-black dark:text-white"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+        <div class="flex justify-between mb-4 text-black dark:text-white"><span>Shipping</span><span>$${shipping.toFixed(2)}</span></div>
+        <hr class="my-4 border-gray-300 dark:border-gray-700" />
+        <div class="flex justify-between text-xl font-bold text-black dark:text-white"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+        <a href="checkout.html" class="block w-full mt-6 bg-black dark:bg-white text-white dark:text-black text-center py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition">Proceed to Checkout</a>
+      </div>
+    </div>`;
+  root.querySelector('[data-clear]').addEventListener('click', () => Cart.clear());
+  root.querySelectorAll('[data-inc]').forEach(b => b.addEventListener('click', () => Cart.increase(Number(b.dataset.inc))));
+  root.querySelectorAll('[data-dec]').forEach(b => b.addEventListener('click', () => Cart.decrease(Number(b.dataset.dec))));
+  root.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => Cart.remove(Number(b.dataset.rm))));
+}
+document.addEventListener('DOMContentLoaded', render);
+document.addEventListener('cartchange', render);
+</script>
+</body>
+</html>
