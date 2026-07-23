@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout — Velora</title>
+<meta name="description" content="Enter your shipping and payment details to complete your Velora order." />
+<link rel="stylesheet" href="style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
+</head>
+<body class="min-h-screen flex flex-col">
+<div id="navbar"></div>
+<main class="flex-1 min-h-screen bg-white dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold mb-10 text-black dark:text-white">Checkout</h1>
+    <form id="checkout-form" class="grid lg:grid-cols-3 gap-10" novalidate>
+      <div class="lg:col-span-2 space-y-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+          <h2 class="text-2xl font-semibold mb-6 text-black dark:text-white">Customer Information</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div><input name="firstName" placeholder="First Name" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+            <div><input name="lastName" placeholder="Last Name" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+            <div class="md:col-span-2"><input name="email" type="email" placeholder="Email" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+            <div class="md:col-span-2"><input name="phone" placeholder="Phone Number" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+          <h2 class="text-2xl font-semibold mb-6 text-black dark:text-white">Shipping Address</h2>
+          <div class="space-y-4">
+            <div><input name="address" placeholder="Street Address" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div><input name="city" placeholder="City" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+              <div><input name="state" placeholder="State" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div><input name="zip" placeholder="ZIP Code" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+              <div><input name="country" placeholder="Country" class="ck-input" /><p class="err text-red-500 text-sm mt-1 hidden"></p></div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+          <h2 class="text-2xl font-semibold mb-6 text-black dark:text-white">Payment Method</h2>
+          <div class="space-y-3 text-black dark:text-white">
+            <label class="flex items-center gap-3"><input type="radio" name="payment" checked /> Credit / Debit Card</label>
+            <label class="flex items-center gap-3"><input type="radio" name="payment" /> PayPal</label>
+            <label class="flex items-center gap-3"><input type="radio" name="payment" /> Cash on Delivery</label>
+          </div>
+        </div>
+      </div>
+      <div id="summary" class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 h-fit sticky top-24"></div>
+    </form>
+  </div>
+</main>
+<div id="footer"></div>
+<style>
+.ck-input { border-radius: .5rem; padding: .75rem; width: 100%; background: #fff; color: #000; border: 1px solid #d1d5db; }
+.dark .ck-input { background: #374151; color: #fff; border-color: #4b5563; }
+.ck-input.err-input { border-color: #ef4444; }
+.ck-input:focus { outline: none; box-shadow: 0 0 0 2px #000; }
+.dark .ck-input:focus { box-shadow: 0 0 0 2px #fff; }
+</style>
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script src="layout.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const summary = document.getElementById('summary');
+  function drawSummary() {
+    const items = Cart.items;
+    const subtotal = Cart.subtotal();
+    const shipping = subtotal > 0 ? 10 : 0;
+    const total = subtotal + shipping;
+    summary.innerHTML = `
+      <h2 class="text-2xl font-semibold mb-6 text-black dark:text-white">Order Summary</h2>
+      <div class="space-y-3">
+        ${items.map(i => `<div class="flex justify-between text-black dark:text-white"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('') || '<p class="text-gray-500 dark:text-gray-400">Your cart is empty.</p>'}
+      </div>
+      <hr class="my-6 border-gray-300 dark:border-gray-700" />
+      <div class="space-y-2 text-black dark:text-white">
+        <div class="flex justify-between"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+        <div class="flex justify-between"><span>Shipping</span><span>$${shipping.toFixed(2)}</span></div>
+        <div class="flex justify-between text-xl font-bold pt-4 border-t border-gray-300 dark:border-gray-700"><span>Total</span><span>$${total.toFixed(2)}</span></div>
+      </div>
+      <button id="place-order" type="submit" class="w-full mt-8 bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition">Place Order</button>
+      <a href="cart.html" class="block text-center mt-4 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition">Back to Cart</a>`;
+  }
+  drawSummary();
+  document.addEventListener('cartchange', drawSummary);
+
+  const form = document.getElementById('checkout-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const required = { firstName: 'First Name is required', lastName: 'Last Name is required', email: 'Email is required',
+      phone: 'Phone Number is required', address: 'Street Address is required', city: 'City is required',
+      state: 'State is required', zip: 'ZIP Code is required', country: 'Country is required' };
+    let ok = true;
+    Object.entries(required).forEach(([name, msg]) => {
+      const input = form.querySelector(`[name="${name}"]`);
+      const err = input.parentElement.querySelector('.err');
+      const val = String(fd.get(name) || '').trim();
+      let m = '';
+      if (!val) m = msg;
+      else if (name === 'email' && !/\S+@\S+\.\S+/.test(val)) m = 'Enter a valid email';
+      if (m) { ok = false; input.classList.add('err-input'); err.textContent = m; err.classList.remove('hidden'); }
+      else { input.classList.remove('err-input'); err.classList.add('hidden'); }
+    });
+    if (!ok) return;
+    Cart.clear();
+    location.href = 'order-success.html';
+  });
+});
+</script>
+</body>
+</html>
