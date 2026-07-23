@@ -68,7 +68,7 @@
           <h3 class="text-xl font-semibold mb-5">Support</h3>
           <ul class="space-y-3 text-gray-400">
             <li>Email: support@velora.com</li>
-            <li>Phone: +91 98765 43210</li>
+            <li>Phone: 0000000000</li>
             <li>Mon - Sat: 9AM - 6PM</li>
           </ul>
         </div>
